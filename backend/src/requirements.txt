@@ -1,0 +1,6 @@
+tornado==5.1.1
+casbin>=0.2
+requests>=2.22.0
+pymongo>=3.9.0
+pycrypto
+pytz

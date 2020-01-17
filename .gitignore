@@ -1,0 +1,15 @@
+.idea
+__pycache__
+*.pyc
+.idea
+**pycache**
+*.zip
+*.egg-info
+*.html
+*.json
+
+.eggs/
+dist/
+build/
+tags
+dist

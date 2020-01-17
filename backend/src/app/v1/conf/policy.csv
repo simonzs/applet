@@ -1,0 +1,9 @@
+p, admin, /*, (GET)|(POST)|(PUT)|(DELETE), allow
+
+p, visitor, /, (GET)|(POST)|(PUT)|(DELETE), allow
+
+p, viewer, /*, GET, allow
+
+p, operator, /*, (GET)|(POST)|(PUT)|(DELETE), allow
+
+p, developer, /api/v2/guard/time, (GET)|(POST), allow
