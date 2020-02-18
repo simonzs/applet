@@ -51,7 +51,7 @@ class SerializerUser():
             "user_id": 123,
             "reset": False
         }
-        result = table_users.insert_one(_data=_data)
+        result = table_users.insert_one(_data)
         data= result.data
         return ModelUser(data)
 

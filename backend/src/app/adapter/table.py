@@ -9,8 +9,8 @@
     https://docs.mongodb.com/manual/core/map-reduce/
 '''
 import logging
-from typing import Dict
 from uuid import uuid4
+from typing import Dict
 from abc import abstractmethod, ABC
 from app.adapter.base import _DATABASE
 from app.adapter.result import InsertOneResult
@@ -169,35 +169,22 @@ class interface(ABC):
 class Table(interface):
 
     def __init__(self, name: str, _db) -> None: 
+        self._name = name
         self._db = _db
         self._type = _db.type
         
-        # choose table tool
-        if self._type == _DATABASE.MONGODB:
-            logging.error(dir(self._db))
-
+    @property
+    def table(self):
+        if not hasattr(self, '_table'):
+            self._table = self._db.get_table(self._name)
+        return self._table
 
     def bulk_write(self, *args, **kwargs): pass
 
-    def insert_one(self, _data: Dict, _id: uuid4=uuid4(), **kwargs): 
-        logging.warning("insert_one")
-        _id = str(_id)
-        if self._type == _DATABASE.MONGODB:
-            pass
-        insert_id = 123
-        acknowledged = True
-        _data = {
-            "name": "123",
-            "remark": "123",
-            "password": "123",
-            "role": "123",
-
-            "user_id": 123,
-            "reset": False, 
-            "id": "123",
-            "created_time": 123,
-            "updated_time": 123
-        }
+    def insert_one(self, document: Dict, _id: str=None, **kwargs): 
+        if _id is None:
+            _id = str(uuid4())
+        insert_id, acknowledged, _data = self.table.insert_one(document, _id, **kwargs)
         return InsertOneResult(insert_id, acknowledged, _data)
 
     def insert_many(self, *args, **kwargs): pass

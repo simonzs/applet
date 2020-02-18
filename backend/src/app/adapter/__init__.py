@@ -55,7 +55,7 @@ class Adapter(object):
                 _type:_DATABASE=_DATABASE.MONGODB, 
                 timeout:_TIMEOUT=_TIMEOUT.MONGODB, 
                 **kwargs) -> Database:
-        return  Database(host, port, _type, timeout, **kwargs)
+        return  Database(name, host, port, _type, timeout, **kwargs)
 
     @classmethod
     def get_table(cls,

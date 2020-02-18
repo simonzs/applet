@@ -10,6 +10,7 @@
 import copy
 import logging
 import pymongo
+from typing import Dict
 from pymongo.errors import ConnectionFailure
 from ..driver.base import Table
 
@@ -21,33 +22,60 @@ class Database():
 
 class MongoTable(Table):
 
-    def __init__(self, name:str, _db, **kwargs):
-        pass
+    def __init__(self, name:str, db, **kwargs):
+        self._name = name
+        self._db = db
+    
+    @property
+    def table(self):
+        if not hasattr(self, '_table'):
+            self._table = self._db.get_collection(self._name)
+        return self._table
+
+    def insert_one(self, document: Dict, _id: str, **kwargs):
+        if 'id' in document:
+            raise KeyError('Not need id, but given: {}.'.format(document))
+        logging.error(_id)
+        logging.error(document)
+        self.table.insert_one()
+        insert_id = 123
+        acknowledged = True
+        _data = {
+            "name": "123",
+            "remark": "123",
+            "password": "123",
+            "role": "123",
+
+            "user_id": 123,
+            "reset": False, 
+            "id": "123",
+            "created_time": 123,
+            "updated_time": 123
+        }
+        return insert_id, acknowledged, _data 
 
 
 class MongoDatabase(Database):
 
-    def __init__(self, name: str, _host='localhost', port= 27017, **kwargs):
-        """
-        Args:
-            host(optional): hostname or IP address or Unix domain socket path of a single mongod
-            or mongos instance to connect to, or a mongodb URI, or a list of hostnames / mongodb
-            URIs.
-            port(optional): port number on which to connect.
-        Returns: 
-            Client for a MongoDB instance, a replica set, or a set of mongoses.
-        Raise:
-            ConnectionFailure: Raised when a connection to the database cannot be made or is lost.
-        """
+    def __init__(self, 
+                name: str, 
+                host: str, 
+                port: int= 27017, 
+                **kwargs):
+
         _client = pymongo.MongoClient(host, port, **kwargs)
         try:
             _client.admin.command('ismaster')
         except ConnectionFailure:
             logging.exception('Service not available')
         self._db = _client.get_database(name=name)
-        self._db.command({"setParameter":1, "internalQueryExecMaxBlockingSortBytes":335544320})
+        # self._db.command({"setParameter":1, "internalQueryExecMaxBlockingSortBytes":335544320})
 
-    def get_table(self, name: str, _db, **kwargs):
+    def get_table(self, name, **kwargs):
+        """
+        Args: 
+            name: the name of table.
+        """
         return MongoTable(name, self._db, **kwargs)
 
     def close(self):
